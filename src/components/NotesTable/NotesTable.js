@@ -1,90 +1,23 @@
-import React, { Fragment } from 'react';
+import React from 'react';
 import Table from 'react-bootstrap/Table';
-import Form from 'react-bootstrap/Form';
-import Button from 'react-bootstrap/Button';
-
-import CategoriesOptions from '../AddNoteForm/CategoriesOptions';
-import EmptyTableRow from './EmptyTableRow';
-import NotesTableRowInReadMode from './NotesTableRowInReadMode';
+import NotesTableBodyContent from './NotesTableBodyContent';
 import categories from '../../constants/categories';
-
-function TbodyContent({
-  todos,
-  toggleTodo,
-  deleteTodo,
-  toggleTableRowToUpdateMode,
-  form,
-  saveEdit,
-  cancelEdit,
-  handleChangeLocally,
-}) {
-  if (todos.length === 0) {
-    return <EmptyTableRow colSpan={6} />;
-  }
-  return (
-    <Fragment>
-      {
-        todos.map((todo, index) => (
-          <tr key={todo.id}>
-            { todo.id === form.id ?
-              <>
-                <td>{index + 1}</td>
-                <td>
-                  <Form.Check
-                    checked={todo.completed}
-                    type={'checkbox'}
-                    label={todo.completed ? 'Restore' : 'Complete'}
-                    id={`notes-table-${todo.id}`}
-                    onChange={() => toggleTodo(todo.id)}
-                  />
-                </td>
-                <td>
-                  <Form.Control name={'text'} value={form.text} onInput={(e) => handleChangeLocally(e)}/>
-                </td>
-                <td>
-                  <Form.Select name={'category'} value={form.category} onChange={(e) => handleChangeLocally(e)}>
-                    <CategoriesOptions />
-                  </Form.Select>
-                </td>
-                <td>
-                  <Button variant={'secondary'} size={'sm'} className={'me-2'} onClick={() => cancelEdit(todo)}>Cancel</Button>
-                  <Button variant={'success'} size={'sm'} onClick={() => saveEdit(todo.id)}>Save</Button>
-                </td>
-              </> :
-              <NotesTableRowInReadMode
-                todo={todo}
-                index={index}
-                toggleTodo={toggleTodo}
-                deleteTodo={deleteTodo}
-                toggleTableRowToUpdateMode={toggleTableRowToUpdateMode}
-              />
-            }
-          </tr>
-        ))
-      }
-    </Fragment>
-  );
-}
 
 class NotesTable extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      form: {
+      editNoteForm: {
         id: null,
-        category: categories[0].value,
         text: '',
+        category: categories.default.value,
       }
     };
-    this.toggleTableRowToUpdateMode = this.toggleTableRowToUpdateMode.bind(this);
-    this.cancelEdit = this.cancelEdit.bind(this);
-    this.saveEdit = this.saveEdit.bind(this);
-    this.handleChangeLocally = this.handleChangeLocally.bind(this);
   }
 
-  toggleTableRowToUpdateMode({ id, text, category }) {
+  toggleTableRowToUpdateMode = ({ id, text, category }) => {
     this.setState({
-      form: {
+      editNoteForm: {
         id,
         text,
         category,
@@ -92,39 +25,39 @@ class NotesTable extends React.Component {
     })
   }
 
-  cancelEdit() {
+  toggleTableRowToReadMode = () => {
     this.setState({
-      form: {
+      editNoteForm: {
         id: null,
-        category: categories[0].value,
+        category: categories.default.value,
         text: '',
       }
     })
   }
 
-  saveEdit() {
-    this.props.updateTodo(this.state.form);
-    this.cancelEdit();
+  updateNote = () => {
+    this.props.updateNote(this.state.editNoteForm);
+    this.toggleTableRowToReadMode();
   }
 
-  handleChangeLocally(e) {
+  handleChange = (e) => {
     const { name, value } = e.target;
     this.setState({
-      form: {
-        ...this.state.form,
+      editNoteForm: {
+        ...this.state.editNoteForm,
         [name]: value,
       }
     })
   }
 
   render() {
-    const { props: { todos, toggleTodo, deleteTodo } } = this;
-    const { state: { form } } = this;
+    const { props: { notes, toggleNoteCompletedState, deleteNote } } = this;
+    const { state: { editNoteForm } } = this;
     const {
       toggleTableRowToUpdateMode,
-      cancelEdit,
-      saveEdit,
-      handleChangeLocally,
+      toggleTableRowToReadMode,
+      updateNote,
+      handleChange,
     } = this;
 
     return (
@@ -139,15 +72,15 @@ class NotesTable extends React.Component {
         </tr>
         </thead>
         <tbody>
-        <TbodyContent
-          todos={todos}
-          toggleTodo={toggleTodo}
-          deleteTodo={deleteTodo}
+        <NotesTableBodyContent
+          notes={notes}
+          toggleNoteCompletedState={toggleNoteCompletedState}
+          deleteNote={deleteNote}
           toggleTableRowToUpdateMode={toggleTableRowToUpdateMode}
-          cancelEdit={cancelEdit}
-          saveEdit={saveEdit}
-          form={form}
-          handleChangeLocally={handleChangeLocally}
+          toggleTableRowToReadMode={toggleTableRowToReadMode}
+          updateNote={updateNote}
+          editNoteForm={editNoteForm}
+          handleChange={handleChange}
         />
         </tbody>
       </Table>

@@ -18,110 +18,113 @@ class App extends React.Component {
     this.state = {
       activeFilter: filters.default,
       search: '',
-      todos: [],
+      notes: [],
     };
-    this.toggleActiveFilter = this.toggleActiveFilter.bind(this);
-    this.searchTodos = this.searchTodos.bind(this);
-    this.toggleTodo = this.toggleTodo.bind(this);
-    this.addTodo = this.addTodo.bind(this);
-    this.deleteTodo = this.deleteTodo.bind(this);
-    this.updateTodo = this.updateTodo.bind(this);
   }
 
-  toggleActiveFilter(activeFilter) {
+  toggleActiveFilter = (activeFilter) => {
     this.setState({
       activeFilter,
     });
   }
 
-  toggleTodo(id) {
-    const todos = this.state.todos.map((todo) => {
-      if (todo.id === id) {
+  toggleNoteCompletedState = (noteId) => {
+    const notes = this.state.notes.map((note) => {
+      if (note.id === noteId) {
         return {
-          ...todo,
-          completed: !todo.completed,
+          ...note,
+          completed: !note.completed,
         };
       }
-      return todo;
+      return note;
     });
     this.setState({
-      todos,
+      notes,
     });
   }
 
-  searchTodos(event) {
+  searchNotes = (event) => {
     let search = event.target.value;
     this.setState({
       search,
     });
   }
 
-  addTodo({ text, category }) {
+  addNote = ({ text, category }) => {
     const id = uuidv4();
-    const todo = {
+    const note = {
       completed: false,
       category,
       text,
       id,
     };
-    const todos = [...this.state.todos, todo];
+    const notes = [...this.state.notes, note];
     this.setState({
-      todos,
+      notes,
     })
   }
 
-  deleteTodo(id) {
-    const todos = this.state.todos.filter((todo) => todo.id !== id);
+  deleteNote = (noteId) => {
+    const notes = this.state.notes.filter((note) => note.id !== noteId);
     this.setState({
-      todos,
+      notes,
     })
   }
 
-  updateTodo(todo) {
-    const todos = this.state.todos.map((item) => {
-      if (item.id === todo.id) {
+  updateNote = ({ id, text, category }) => {
+    const notes = this.state.notes.map((note) => {
+      if (note.id === id) {
         return {
-          ...item,
-          ...todo,
+          ...note,
+          category,
+          text,
+          id,
         };
       }
-      return item;
+      return note;
     });
     this.setState({
-      todos,
+      notes,
     })
+  }
+
+  filterNotes = () => {
+    const { state: { notes, activeFilter, search } } = this;
+
+    return notes.filter((note) => {
+      if (activeFilter === filters.ALL) {
+        return note.text.includes(search);
+      }
+      if (activeFilter === filters.COMPLETED) {
+        return note.completed && note.text.includes(search);
+      }
+      if (activeFilter === filters.IN_PROGRESS) {
+        return !note.completed && note.text.includes(search);
+      }
+      return note;
+    });
   }
 
   render() {
-    const { state: { todos, activeFilter, search } } = this;
+    const { state: { notes, activeFilter } } = this;
     const {
       toggleActiveFilter,
-      searchTodos,
-      toggleTodo,
-      addTodo,
-      deleteTodo,
-      updateTodo,
+      searchNotes,
+      toggleNoteCompletedState,
+      addNote,
+      deleteNote,
+      updateNote,
+      filterNotes,
     } = this;
 
-    const todosFiltered = todos.filter(todo => {
-      if (activeFilter === filters.ALL) {
-        return todo.text.includes(search);
-      }
-      if (activeFilter === filters.COMPLETED) {
-        return todo.completed && todo.text.includes(search);
-      }
-      if (activeFilter === filters.IN_PROGRESS) {
-        return !todo.completed && todo.text.includes(search);
-      }
-      return todo;
-    });
+    const notesFiltered = filterNotes();
 
     return (
       <Container className={'pt-4'}>
         <Row>
           <Col>
             <AddNoteForm
-              addTodo={addTodo}
+              addNote={addNote}
             />
           </Col>
         </Row>
@@ -129,12 +132,12 @@ class App extends React.Component {
         <Row className={'mb-4'}>
           <Col xs={4}>
             <SearchForm
-              searchTodos={searchTodos}
+              searchNotes={searchNotes}
             />
           </Col>
           <Col className={'text-end'} xs={8}>
             <Filters
-              todos={todos}
+              notes={notes}
               activeFilter={activeFilter}
               toggleActiveFilter={toggleActiveFilter}
             />
@@ -143,10 +146,10 @@ class App extends React.Component {
         <Row>
           <Col>
             <NotesTable
-              todos={todosFiltered}
-              toggleTodo={toggleTodo}
-              deleteTodo={deleteTodo}
-              updateTodo={updateTodo}
+              notes={notesFiltered}
+              toggleNoteCompletedState={toggleNoteCompletedState}
+              deleteNote={deleteNote}
+              updateNote={updateNote}
             />
           </Col>
         </Row>

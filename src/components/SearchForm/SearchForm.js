@@ -1,10 +1,10 @@
 import Form from 'react-bootstrap/Form';
 
-function SearchForm({ searchTodos }) {
+function SearchForm({ searchNotes }) {
   return (
     <Form.Control
-      placeholder={'Find todos - enter at least 2 characters ...'}
-      onInput={(event) => searchTodos(event)}
+      placeholder={'Find notes - enter at least 2 characters'}
+      onInput={(event) => searchNotes(event)}
     />
   );
 }

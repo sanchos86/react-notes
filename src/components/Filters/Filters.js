@@ -3,30 +3,30 @@ import Button from 'react-bootstrap/Button';
 
 import filters from '../../constants/filters';
 
-function Filters({ activeFilter, toggleActiveFilter, todos }) {
-  const allTodosCount = todos.length;
-  const completedTodosCount = todos.filter((todo) => todo.completed).length;
-  const inProgressTodosCount = allTodosCount - completedTodosCount;
+function Filters({ activeFilter, toggleActiveFilter, notes }) {
+  const allNotesCount = notes.length;
+  const completedNotesCount = notes.filter((note) => note.completed).length;
+  const inProgressNotesCount = allNotesCount - completedNotesCount;
 
   return (
-    <ButtonGroup aria-label="Todo filters">
+    <ButtonGroup aria-label="Notes filter">
       <Button
         active={activeFilter === filters.ALL}
         onClick={() => toggleActiveFilter(filters.ALL)}
       >
-        All | {allTodosCount}
+        All | {allNotesCount}
       </Button>
       <Button
         active={activeFilter === filters.COMPLETED}
         onClick={() => toggleActiveFilter(filters.COMPLETED)}
       >
-        Completed | {completedTodosCount}
+        Completed | {completedNotesCount}
       </Button>
       <Button
         active={activeFilter === filters.IN_PROGRESS}
         onClick={() => toggleActiveFilter(filters.IN_PROGRESS)}
       >
-        In progress | {inProgressTodosCount}
+        In progress | {inProgressNotesCount}
       </Button>
     </ButtonGroup>
   );

@@ -3,37 +3,37 @@ import Form from 'react-bootstrap/Form';
 import Button from 'react-bootstrap/Button';
 
 const NotesTableRowInReadMode = ({
-  todo,
+  note,
   index,
-  toggleTodo,
-  deleteTodo,
+  toggleNoteCompletedState,
+  deleteNote,
   toggleTableRowToUpdateMode,
 }) => (
   <Fragment>
     <td>{index + 1}</td>
     <td>
       <Form.Check
-        checked={todo.completed}
+        checked={note.completed}
         type={'checkbox'}
-        label={todo.completed ? 'Restore' : 'Complete'}
-        id={`notes-table-${todo.id}`}
-        onChange={() => toggleTodo(todo.id)}
+        label={note.completed ? 'Restore' : 'Complete'}
+        id={`notes-table-${note.id}`}
+        onChange={() => toggleNoteCompletedState(note.id)}
       />
     </td>
-    <td>{todo.text}</td>
-    <td>{todo.category}</td>
+    <td>{note.text}</td>
+    <td>{note.category}</td>
     <td>
       <Button
         size={'sm'}
         className={'me-2'}
-        onClick={() => toggleTableRowToUpdateMode(todo)}
+        onClick={() => toggleTableRowToUpdateMode(note)}
       >
         Edit
       </Button>
       <Button
         variant={'danger'}
         size={'sm'}
-        onClick={() => deleteTodo(todo.id)}
+        onClick={() => deleteNote(note.id)}
       >
         Delete
       </Button>

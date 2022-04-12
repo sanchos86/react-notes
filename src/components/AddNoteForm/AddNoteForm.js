@@ -1,61 +1,45 @@
 import React from 'react';
 import Form from 'react-bootstrap/Form';
 import Button from 'react-bootstrap/Button';
-
+import CategoriesOptions from './CategoriesOptions';
 import categories from '../../constants/categories';
-
-function Options() {
-  return (
-    <>
-      {
-        categories.map((category) => (
-          <option key={category.value} value={category.value}>
-            {category.label}
-          </option>
-        ))
-      }
-    </>
-  );
-}
 
 class AddNoteForm extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
       form: {
-        category: categories[0].value,
+        category: categories.default.value,
         text: '',
       }
     };
-    this.submitForm = this.submitForm.bind(this);
-    this.handleChange = this.handleChange.bind(this);
   }
 
-  submitForm(e) {
+  submitForm = (e) => {
     e.preventDefault();
     const { state: { form } } = this;
-    this.props.addTodo(form);
+    this.props.addNote(form);
     this.resetForm();
   }
 
-  resetForm() {
+  resetForm = () => {
     this.setState({
       form: {
-        category: categories[0].value,
+        category: categories.default.value,
         text: '',
       }
     });
   }
 
-  handleChange(e) {
-    const { name } = e.target;
+  handleChange = (e) => {
+    const { name, value } = e.target;
     const form = {
       ...this.state.form,
-      [name]: e.target.value,
+      [name]: value,
     };
     this.setState({
       form,
-    })
+    });
   }
 
   render() {
@@ -71,7 +55,7 @@ class AddNoteForm extends React.Component {
             value={form.category}
             onChange={(e) => handleChange(e)}
           >
-            <Options />
+            <CategoriesOptions />
           </Form.Select>
         </Form.Group>
         <Form.Group className="mb-3">
@@ -79,7 +63,7 @@ class AddNoteForm extends React.Component {
           <Form.Control
             name={'text'}
             value={form.text}
-            placeholder="Enter todo"
+            placeholder="Enter note text"
             onInput={(e) => handleChange(e)}
           />
         </Form.Group>
