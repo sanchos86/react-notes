@@ -4,7 +4,7 @@ function SearchForm({ searchNotes }) {
   return (
     <Form.Control
       placeholder={'Find notes - enter at least 2 characters'}
-      onInput={(event) => searchNotes(event)}
+      onChange={searchNotes}
     />
   );
 }
