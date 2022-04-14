@@ -29,14 +29,14 @@ const NotesTableRowInUpdateMode = ({
       <Form.Control
         name={'text'}
         value={editNoteForm.text}
-        onInput={(e) => handleChange(e)}
+        onChange={handleChange}
       />
     </td>
     <td>
       <Form.Select
         name={'category'}
         value={editNoteForm.category}
-        onChange={(e) => handleChange(e)}
+        onChange={handleChange}
       >
         <CategoriesOptions/>
       </Form.Select>

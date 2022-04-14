@@ -1,56 +1,43 @@
-import React from 'react';
+import { useState } from 'react';
 import { v4 as uuidv4 } from 'uuid';
-
 import Container from 'react-bootstrap/Container';
 import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
-
 import AddNoteForm from './components/AddNoteForm/AddNoteForm';
 import Filters from './components/Filters/Filters';
 import NotesTable from './components/NotesTable/NotesTable';
 import SearchForm from './components/SearchForm/SearchForm';
-
 import filters from './constants/filters';
 
-class App extends React.Component {
-  constructor(props) {
-    super(props);
-    this.state = {
-      activeFilter: filters.default,
-      search: '',
-      notes: [],
-    };
+const App = () => {
+  const [activeFilter, setActiveFilter] = useState(filters.default);
+  const [search, setSearch] = useState('');
+  const [notes, setNotes] = useState([]);
+
+  const toggleActiveFilter = (activeFilter) => {
+    setActiveFilter(activeFilter);
   }
 
-  toggleActiveFilter = (activeFilter) => {
-    this.setState({
-      activeFilter,
+  const toggleNoteCompletedState = (noteId) => {
+    setNotes((prevState) => {
+      return prevState.map((note) => {
+        if (note.id === noteId) {
+          return {
+            ...note,
+            completed: !note.completed,
+          };
+        }
+        return note;
+      });
     });
   }
 
-  toggleNoteCompletedState = (noteId) => {
-    const notes = this.state.notes.map((note) => {
-      if (note.id === noteId) {
-        return {
-          ...note,
-          completed: !note.completed,
-        };
-      }
-      return note;
-    });
-    this.setState({
-      notes,
-    });
-  }
-
-  searchNotes = (event) => {
+  const searchNotes = (event) => {
     let search = event.target.value;
-    this.setState({
-      search,
-    });
+    setSearch(search);
   }
 
-  addNote = ({ text, category }) => {
+  const addNote = ({ text, category }) => {
     const id = uuidv4();
     const note = {
       completed: false,
@@ -58,39 +45,34 @@ class App extends React.Component {
       text,
       id,
     };
-    const notes = [...this.state.notes, note];
-    this.setState({
-      notes,
-    })
-  }
-
-  deleteNote = (noteId) => {
-    const notes = this.state.notes.filter((note) => note.id !== noteId);
-    this.setState({
-      notes,
-    })
-  }
-
-  updateNote = ({ id, text, category }) => {
-    const notes = this.state.notes.map((note) => {
-      if (note.id === id) {
-        return {
-          ...note,
-          category,
-          text,
-          id,
-        };
-      }
-      return note;
+    setNotes((prevState) => {
+      return [...prevState, note];
     });
-    this.setState({
-      notes,
-    })
   }
 
-  filterNotes = () => {
-    const { state: { notes, activeFilter, search } } = this;
+  const deleteNote = (noteId) => {
+    setNotes((prevState) => {
+      return prevState.filter((note) => note.id !== noteId);
+    });
+  }
 
+  const updateNote = ({ id, text, category }) => {
+    setNotes((prevState) => {
+      return prevState.map((note) => {
+        if (note.id === id) {
+          return {
+            ...note,
+            category,
+            text,
+            id,
+          };
+        }
+        return note;
+      });
+    });
+  }
+
+  const filterNotes = () => {
     return notes.filter((note) => {
       if (activeFilter === filters.ALL) {
         return note.text.includes(search);
@@ -105,57 +87,44 @@ class App extends React.Component {
     });
   }
 
-  render() {
-    const { state: { notes, activeFilter } } = this;
-    const {
-      toggleActiveFilter,
-      searchNotes,
-      toggleNoteCompletedState,
-      addNote,
-      deleteNote,
-      updateNote,
-      filterNotes,
-    } = this;
+  const notesFiltered = filterNotes();
 
-    const notesFiltered = filterNotes();
-
-    return (
-      <Container className={'pt-4'}>
-        <Row>
-          <Col>
-            <AddNoteForm
-              addNote={addNote}
-            />
-          </Col>
-        </Row>
-        <hr />
-        <Row className={'mb-4'}>
-          <Col xs={4}>
-            <SearchForm
-              searchNotes={searchNotes}
-            />
-          </Col>
-          <Col className={'text-end'} xs={8}>
-            <Filters
-              notes={notes}
-              activeFilter={activeFilter}
-              toggleActiveFilter={toggleActiveFilter}
-            />
-          </Col>
-        </Row>
-        <Row>
-          <Col>
-            <NotesTable
-              notes={notesFiltered}
-              toggleNoteCompletedState={toggleNoteCompletedState}
-              deleteNote={deleteNote}
-              updateNote={updateNote}
-            />
-          </Col>
-        </Row>
-      </Container>
-    );
-  }
-}
+  return (
+    <Container className={'pt-4'}>
+      <Row>
+        <Col>
+          <AddNoteForm
+            addNote={addNote}
+          />
+        </Col>
+      </Row>
+      <hr />
+      <Row className={'mb-4'}>
+        <Col xs={4}>
+          <SearchForm
+            searchNotes={searchNotes}
+          />
+        </Col>
+        <Col className={'text-end'} xs={8}>
+          <Filters
+            notes={notes}
+            activeFilter={activeFilter}
+            toggleActiveFilter={toggleActiveFilter}
+          />
+        </Col>
+      </Row>
+      <Row>
+        <Col>
+          <NotesTable
+            notes={notesFiltered}
+            toggleNoteCompletedState={toggleNoteCompletedState}
+            deleteNote={deleteNote}
+            updateNote={updateNote}
+          />
+        </Col>
+      </Row>
+    </Container>
+  );
+};
 
 export default App;
