@@ -1,6 +1,8 @@
 import { Fragment } from 'react';
 import Form from 'react-bootstrap/Form';
 import Button from 'react-bootstrap/Button';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faXmark, faCheck } from '@fortawesome/free-solid-svg-icons';
 import CategoriesOptions from '../AddNoteForm/CategoriesOptions';
 
 const NotesTableRowInUpdateMode = ({
@@ -46,14 +48,14 @@ const NotesTableRowInUpdateMode = ({
         className={'me-2'}
         onClick={toggleTableRowToReadMode}
       >
-        Cancel
+        <FontAwesomeIcon icon={faXmark} className={'me-1'} />Cancel
       </Button>
       <Button
         variant={'success'}
         size={'sm'}
         onClick={updateNote}
       >
-        Save
+        <FontAwesomeIcon icon={faCheck} className={'me-1'} />Update
       </Button>
     </td>
   </Fragment>
