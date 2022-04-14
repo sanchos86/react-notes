@@ -1,78 +1,64 @@
-import React from 'react';
+import React, { useState } from 'react';
 import Form from 'react-bootstrap/Form';
 import Button from 'react-bootstrap/Button';
 import CategoriesOptions from './CategoriesOptions';
 import categories from '../../constants/categories';
 
-class AddNoteForm extends React.Component {
-  constructor(props) {
-    super(props);
-    this.state = {
-      form: {
-        category: categories.default.value,
-        text: '',
-      }
-    };
-  }
+const AddNoteForm = ({ addNote }) => {
+  const [form, setForm] = useState({
+    category: categories.default.value,
+    text: '',
+  });
 
-  submitForm = (e) => {
+  const resetForm = () => {
+    setForm({
+      category: categories.default.value,
+      text: '',
+    });
+  };
+
+  const submitForm = (e) => {
     e.preventDefault();
-    const { state: { form } } = this;
-    this.props.addNote(form);
-    this.resetForm();
+    addNote(form);
+    resetForm();
   }
 
-  resetForm = () => {
-    this.setState({
-      form: {
-        category: categories.default.value,
-        text: '',
-      }
-    });
-  }
-
-  handleChange = (e) => {
+  const handleChange = (e) => {
     const { name, value } = e.target;
-    const form = {
-      ...this.state.form,
+    setForm((prevState) => ({
+      ...prevState,
       [name]: value,
-    };
-    this.setState({
-      form,
-    });
+    }));
   }
 
-  render() {
-    const { submitForm, handleChange } = this;
-    const { state: { form } } = this;
+  const { text, category } = form;
 
-    return (
-      <Form onSubmit={(e) => submitForm(e)}>
-        <Form.Group className="mb-3">
-          <Form.Label>Category</Form.Label>
-          <Form.Select
-            name={'category'}
-            value={form.category}
-            onChange={(e) => handleChange(e)}
-          >
-            <CategoriesOptions />
-          </Form.Select>
-        </Form.Group>
-        <Form.Group className="mb-3">
-          <Form.Label>Text</Form.Label>
-          <Form.Control
-            name={'text'}
-            value={form.text}
-            placeholder="Enter note text"
-            onInput={(e) => handleChange(e)}
-          />
-        </Form.Group>
-        <Form.Group className={'text-end'}>
-          <Button type={'submit'}>Add note</Button>
-        </Form.Group>
-      </Form>
-    );
-  }
-}
+  return (
+    <Form onSubmit={submitForm}>
+      <Form.Group className="mb-3">
+        <Form.Label>Category</Form.Label>
+        <Form.Select
+          name={'category'}
+          value={category}
+          onChange={handleChange}
+        >
+          <CategoriesOptions />
+        </Form.Select>
+      </Form.Group>
+      <Form.Group className="mb-3">
+        <Form.Label>Text</Form.Label>
+        <Form.Control
+          name={'text'}
+          value={text}
+          placeholder="Enter note text"
+          onChange={handleChange}
+        />
+      </Form.Group>
+      <Form.Group className={'text-end'}>
+        <Button type={'submit'}>Add note</Button>
+      </Form.Group>
+    </Form>
+  );
+};
 
 export default AddNoteForm;
