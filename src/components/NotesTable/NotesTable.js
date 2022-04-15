@@ -1,46 +1,12 @@
-import { useState } from 'react';
 import Table from 'react-bootstrap/Table';
-import NotesTableBodyContent from './NotesTableBodyContent';
-import categories from '../../constants/categories';
+import NotesTableBody from './NotesTableBody';
 
-const NotesTable = (props) => {
-  const [editNoteForm, setEditNoteForm] = useState({
-    id: null,
-    text: '',
-    category: categories.default.value,
-  });
-
-  const toggleTableRowToUpdateMode = ({ id, text, category }) => {
-    setEditNoteForm({
-      id,
-      text,
-      category,
-    });
-  }
-
-  const toggleTableRowToReadMode = () => {
-    setEditNoteForm({
-      id: null,
-      category: categories.default.value,
-      text: '',
-    });
-  }
-
-  const updateNote = () => {
-    props.updateNote(editNoteForm);
-    toggleTableRowToReadMode();
-  }
-
-  const handleChange = (e) => {
-    const { name, value } = e.target;
-    setEditNoteForm((prevState) => ({
-      ...prevState,
-      [name]: value,
-    }));
-  }
-
-  const { notes, toggleNoteCompletedState, deleteNote } = props;
-
+const NotesTable = ({
+  notes,
+  deleteNote,
+  updateNote,
+  toggleNoteCompletedState,
+}) => {
   return (
     <Table bordered>
       <thead>
@@ -52,18 +18,12 @@ const NotesTable = (props) => {
         <th>Actions</th>
       </tr>
       </thead>
-      <tbody>
-      <NotesTableBodyContent
+      <NotesTableBody
         notes={notes}
-        toggleNoteCompletedState={toggleNoteCompletedState}
         deleteNote={deleteNote}
-        toggleTableRowToUpdateMode={toggleTableRowToUpdateMode}
-        toggleTableRowToReadMode={toggleTableRowToReadMode}
         updateNote={updateNote}
-        editNoteForm={editNoteForm}
-        handleChange={handleChange}
+        toggleNoteCompletedState={toggleNoteCompletedState}
       />
-      </tbody>
     </Table>
   );
 };

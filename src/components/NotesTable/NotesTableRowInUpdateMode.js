@@ -1,4 +1,4 @@
-import { Fragment } from 'react';
+import { useForm } from 'react-hook-form';
 import Form from 'react-bootstrap/Form';
 import Button from 'react-bootstrap/Button';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
@@ -8,57 +8,81 @@ import CategoriesOptions from '../AddNoteForm/CategoriesOptions';
 const NotesTableRowInUpdateMode = ({
   index,
   note,
-  handleChange,
-  toggleNoteCompletedState,
   updateNote,
-  editNoteForm,
-  toggleTableRowToReadMode,
-}) => (
-  <Fragment>
-    <td>{index + 1}</td>
-    <td>
-      <Form.Check
-        checked={note.completed}
-        type={'checkbox'}
-        label={note.completed ? 'Restore' : 'Complete'}
-        id={`notes-table-${note.id}`}
-        onChange={() => toggleNoteCompletedState(note.id)}
-      />
-    </td>
-    <td>
-      <Form.Control
-        name={'text'}
-        value={editNoteForm.text}
-        onChange={handleChange}
-      />
-    </td>
-    <td>
-      <Form.Select
-        name={'category'}
-        value={editNoteForm.category}
-        onChange={handleChange}
-      >
-        <CategoriesOptions/>
-      </Form.Select>
-    </td>
-    <td>
-      <Button
-        variant={'secondary'}
-        size={'sm'}
-        className={'me-2'}
-        onClick={toggleTableRowToReadMode}
-      >
-        <FontAwesomeIcon icon={faXmark} className={'me-1'} />Cancel
-      </Button>
-      <Button
-        variant={'success'}
-        size={'sm'}
-        onClick={updateNote}
-      >
-        <FontAwesomeIcon icon={faCheck} className={'me-1'} />Update
-      </Button>
-    </td>
-  </Fragment>
-);
+  setUpdateMode,
+  toggleNoteCompletedState,
+}) => {
+  const { register, handleSubmit, formState: { isValid, errors }, reset } = useForm({
+    defaultValues: {
+      category: note.category,
+      text: note.text,
+    },
+    mode: 'onChange',
+  });
+
+  const submitForm = (data) => {
+    updateNote({
+      ...data,
+      id: note.id,
+    });
+    cancelUpdateMode();
+  };
+
+  const cancelUpdateMode = () => {
+    reset();
+    setUpdateMode(false);
+  };
+
+  return (
+    <tr>
+      <td>{index + 1}</td>
+      <td>
+        <Form.Check
+          checked={note.completed}
+          type={'checkbox'}
+          label={note.completed ? 'Restore' : 'Complete'}
+          id={`notes-table-${note.id}`}
+          onChange={() => toggleNoteCompletedState(note.id)}
+        />
+      </td>
+      <td>
+        <Form.Control
+          {...register('text', {
+            required: { value: true, message: 'Text is required' },
+            minLength: { value: 3, message: 'Text should be at least 3 characters' }
+          })}
+          placeholder="Enter note text"
+          isInvalid={!!errors.text}
+        />
+        <Form.Control.Feedback type="invalid">
+          {errors.text?.message}
+        </Form.Control.Feedback>
+      </td>
+      <td>
+        <Form.Select {...register('category')}>
+          <CategoriesOptions />
+        </Form.Select>
+      </td>
+      <td>
+        <Button
+          variant={'secondary'}
+          size={'sm'}
+          className={'me-2'}
+          onClick={cancelUpdateMode}
+        >
+          <FontAwesomeIcon icon={faXmark} className={'me-1'} />Cancel
+        </Button>
+        <Button
+          variant={'success'}
+          size={'sm'}
+          disabled={!isValid}
+          onClick={handleSubmit(submitForm)}
+        >
+          <FontAwesomeIcon icon={faCheck} className={'me-1'} />Update
+        </Button>
+      </td>
+    </tr>
+  );
+};
 
 export default NotesTableRowInUpdateMode;
