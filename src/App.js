@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { v4 as uuidv4 } from 'uuid';
 import Container from 'react-bootstrap/Container';
 import Row from 'react-bootstrap/Row';
@@ -9,10 +9,23 @@ import NotesTable from './components/NotesTable/NotesTable';
 import SearchForm from './components/SearchForm/SearchForm';
 import filters from './constants/filters';
 
+const NOTES = 'NOTES';
+
 const App = () => {
   const [activeFilter, setActiveFilter] = useState(filters.default);
   const [search, setSearch] = useState('');
   const [notes, setNotes] = useState([]);
+
+  useEffect(() => {
+    const localStorageNotes = window.localStorage.getItem(NOTES);
+    if (localStorageNotes) {
+      setNotes(JSON.parse(localStorageNotes));
+    }
+  }, []);
+
+  useEffect(() => {
+    window.localStorage.setItem(NOTES, JSON.stringify(notes));
+  }, [notes]);
 
   const toggleActiveFilter = (activeFilter) => {
     setActiveFilter(activeFilter);
