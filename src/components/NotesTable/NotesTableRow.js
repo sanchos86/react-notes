@@ -1,6 +1,6 @@
 import { useState } from 'react';
-import NotesTableRowInReadMode from './NotesTableRowInReadMode';
-import NotesTableRowInUpdateMode from './NotesTableRowInUpdateMode';
+import NotesTableRowInReadMode from '@/components/NotesTable/NotesTableRowInReadMode';
+import NotesTableRowInUpdateMode from '@/components/NotesTable/NotesTableRowInUpdateMode';
 
 const NotesTableRow = ({
   index,

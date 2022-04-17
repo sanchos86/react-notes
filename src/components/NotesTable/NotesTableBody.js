@@ -1,5 +1,5 @@
-import EmptyTableRow from './EmptyTableRow';
-import NotesTableRow from './NotesTableRow';
+import EmptyTableRow from '@/components/NotesTable/EmptyTableRow';
+import NotesTableRow from '@/components/NotesTable/NotesTableRow';
 
 const NotesTableBody = ({
   notes,

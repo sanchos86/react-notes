@@ -3,11 +3,11 @@ import { v4 as uuidv4 } from 'uuid';
 import Container from 'react-bootstrap/Container';
 import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
-import AddNoteForm from './components/AddNoteForm/AddNoteForm';
-import Filters from './components/Filters/Filters';
-import NotesTable from './components/NotesTable/NotesTable';
-import SearchForm from './components/SearchForm/SearchForm';
-import filters from './constants/filters';
+import AddNoteForm from '@/components/AddNoteForm/AddNoteForm';
+import Filters from '@/components/Filters/Filters';
+import NotesTable from '@/components/NotesTable/NotesTable';
+import SearchForm from '@/components/SearchForm/SearchForm';
+import filters from '@/constants/filters';
 
 const NOTES = 'NOTES';
 

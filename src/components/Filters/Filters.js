@@ -1,7 +1,6 @@
 import ButtonGroup from 'react-bootstrap/ButtonGroup';
 import Button from 'react-bootstrap/Button';
-
-import filters from '../../constants/filters';
+import filters from '@/constants/filters';
 
 function Filters({ activeFilter, toggleActiveFilter, notes }) {
   const allNotesCount = notes.length;

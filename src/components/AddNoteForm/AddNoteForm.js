@@ -1,8 +1,8 @@
 import { useForm } from 'react-hook-form';
 import Form from 'react-bootstrap/Form';
 import Button from 'react-bootstrap/Button';
-import CategoriesOptions from './CategoriesOptions';
-import categories from '../../constants/categories';
+import CategoriesOptions from '@/components/AddNoteForm/CategoriesOptions';
+import categories from '@/constants/categories';
 
 const AddNoteForm = ({ addNote }) => {
   const { register, handleSubmit, formState: { errors, isValid }, reset } = useForm({

@@ -1,5 +1,5 @@
 import Table from 'react-bootstrap/Table';
-import NotesTableBody from './NotesTableBody';
+import NotesTableBody from '@/components/NotesTable/NotesTableBody';
 
 const NotesTable = ({
   notes,

@@ -3,7 +3,7 @@ import Form from 'react-bootstrap/Form';
 import Button from 'react-bootstrap/Button';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faXmark, faCheck } from '@fortawesome/free-solid-svg-icons';
-import CategoriesOptions from '../AddNoteForm/CategoriesOptions';
+import CategoriesOptions from '@/components/AddNoteForm/CategoriesOptions';
 
 const NotesTableRowInUpdateMode = ({
   index,
